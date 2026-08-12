@@ -55,8 +55,17 @@ git add .                  # 1. 抓取這台電腦上所有修改過、新增加的檔案
 git commit -m "更新說明"    # 2. 本地打包成新版本（引號內寫這次改了什麼）
 git push                   # 3. 直接推送到 GitHub（因為之前設定過了，這次只需打 git push）
 
-3. 團隊協作：讓其他人下載 (Clone) 或共同編輯當你想跟同事或朋友一起開發這個專案時，可以透過以下方式合作：A. 讓其他人下載你的專案（Clone）任何人只要有你 GitHub 專案的網址，都可以把程式碼完整下載回去。請讓他們在自己的電腦終端機輸入：bashgit clone https://github.com
-請謹慎使用程式碼。(這樣他們電腦就會自動建立一個一模一樣的資料夾和所有歷史紀錄。)B. 共同編輯（邀請設定）如果下載你專案的人想要直接「Push」更新上傳到你的 GitHub 倉庫，你必須在網頁上賦予他們權限：進入你的 GitHub 專案網頁。點擊上方的 Settings（設定）。在左側選單點擊 Collaborators（協作者）。點擊 Add people 按鈕，輸入對方的 GitHub 帳號或 Email。對方收到 Email 邀請信並點擊接受後，他們就可以直接使用 git push 把代碼傳到你的倉庫了！
+3. 團隊協作：讓其他人下載 (Clone) 或共同編輯當你想跟同事或朋友一起開發這個專案時，可以透過以下方式合作：
+
+A. 讓其他人下載你的專案（Clone）任何人只要有你 GitHub 專案的網址，
+都可以把程式碼完整下載回去。請讓他們在自己的電腦終端機輸入：
+bashgit clone https://github.com
+請謹慎使用程式碼。(這樣他們電腦就會自動建立一個一模一樣的資料夾和所有歷史紀錄。)
+
+B. 共同編輯（邀請設定）如果下載你專案的人想要直接「Push」更新上傳到你的 GitHub 倉庫，
+你必須在網頁上賦予他們權限：進入你的 GitHub 專案網頁。點擊上方的 Settings（設定）。
+在左側選單點擊 Collaborators（協作者）。點擊 Add people 按鈕，輸入對方的 GitHub 帳號或 Email。
+對方收到 Email 邀請信並點擊接受後，他們就可以直接使用 git push 把代碼傳到你的倉庫了！
 
 # 警告：這會刪除 GitHub 上所有你本地沒有的提交紀錄
 git push origin main --force
@@ -65,4 +74,17 @@ git push origin main --force
 git pull origin main --rebase
 
 # 第二步：等上一步成功完成後，再重新推送
+git push origin main
+
+
+# 1. 暫存所有修改的檔案
+git add .
+
+# 2. 提交一個暫時的紀錄（訊息可自訂）
+git commit -m "Save local work before pull"
+
+# 3. 這時候就可以順利拉取遠端更新了
+git pull origin main --rebase
+
+# 4. 最後重新推送
 git push origin main
