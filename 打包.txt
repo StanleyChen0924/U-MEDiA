@@ -1,0 +1,50 @@
+打包。
+安裝一個pyinstaller
+
+pip install pyinstaller
+
+然後運行命令：
+
+pyinstaller -F -w test.py
+上面的指令會將print屏蔽掉
+
+pyinstaller -F test.py
+上面指令會將print輸出顯示
+
+pyinstaller -F --console test.py
+
+
+
+參數說明：
+-F 表示生成單個可執行檔
+-w 表示去掉主控台視窗，這在GUI介面時非常有用。 不過如果是命令列程式的話那就把這個選項刪除吧！
+-p 表示你自己自訂需要載入的類路徑，一般情況下用不到
+-i 表示可執行檔的圖示
+
+# -*- coding: cp950 -*-
+
+打包32bit
+
+打開 Anaconda Prompt (Miniconda2)
+
+
+set CONDA_FORCE_32BIT=1
+
+conda env list
+
+activate python36
+
+D:
+
+cd D:\Stanley\python\CR48NAUpgrade32bit
+
+pyinstaller --hidden-import=pyautogui,ConfigParser -F -w autorun.py
+
+
+pyinstaller --hidden-import=pyautogui,time,msvcrt -F -w autorun.py
+
+
+pyinstaller --noconsole --onefile 您的檔名.py
+
+(註：--noconsole 可在啟動程式時，自動隱藏背景黑色的 CMD 視窗)
+
