@@ -327,7 +327,7 @@ def main():
                     ##print(f"FAIL")
                     return
 
-            ##python PyMySQL.py 256 250202710            
+            ##python PyMySQL.py 512 250202710            
             if type_param & 0x200:
                 last_time = None
                 # 3. 將當前最新時間寫入註冊表
