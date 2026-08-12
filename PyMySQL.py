@@ -268,7 +268,7 @@ def main():
                         f"ModelName = '{MySQL_ModelName}',"
                         f"operator = '{MySQL_Operator}',"
                         f"Station = '{MySQL_Station}',"
-                        f"StopTime = '{formatted_time}'"
+                        f"StopTime = '{formatted_time}',"
                         f"throughTime = {throughTime}"
                         f"{full_string}"
                 )
