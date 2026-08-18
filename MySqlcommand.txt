@@ -160,3 +160,5 @@ PyMySQL.exe 512 iSN
 
                
 https://raw.githubusercontent.com/StanleyChen0924/U-MEDiA/refs/heads/main/PyMySQL.py
+
+https://raw.githubusercontent.com/StanleyChen0924/U-MEDiA/refs/heads/main/MySqlcommand.txt
