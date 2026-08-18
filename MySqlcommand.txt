@@ -1,4 +1,4 @@
-﻿http://10.4.5.13/phpMyAdmin/
+http://10.4.5.13/phpMyAdmin/
 
 http://169.254.10.2/phpMyAdmin
 
@@ -107,24 +107,31 @@ yyyy-MM-dd HH:mm:ss,CURRENT_DATE
 
 
 0x1:1
+PyMySQL.exe 1 iSN
 sql = f"SELECT {TableDetailStr} FROM CARD WHERE iSN = '{sn_param}'{MySQL_BeforStation}"
 
 0x2:2
+PyMySQL.exe 2 iSN
 sql = f"SELECT {TableDetailStr} FROM {MySQL_TYPE} WHERE iSN = '{sn_param}'"
 
 0x4:4
-sql = "SELECT * FROM " + MySQL_TYPE + " WHERE CMAC = '" + sn_param + "'"
+PyMySQL.exe 4 iSN iSN or PyMySQL.exe CSN CSN
+sql = f"SELECT * FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'"
 
 0x8:8
+PyMySQL.exe 8 iSN
 sql = f"INSERT INTO {MySQL_TYPE} SET iSN='{sn_param}',{TableDetailStr}=100 ON DUPLICATE KEY UPDATE {TableDetailStr} = {TableDetailStr} + 100"
 
 0x10:16
+PyMySQL.exe 16 iSN
 sql = f"INSERT INTO {MySQL_TYPE} SET iSN='{sn_param}',{TableDetailStr}=1 ON DUPLICATE KEY UPDATE {TableDetailStr} = {TableDetailStr} + 1"
 
 0x20:32
+PyMySQL.exe 32 iSN
 sql = f"UPDATE {MySQL_TYPE} SET {TableDetailStr}={TableDetailStr}+100 {full_string} WHERE iSN = '{sn_param}'"
 
 0x40:64
+PyMySQL.exe 64 iSN
 sql = (f"INSERT INTO {TableDetailStr} SET "
                         f"iSN = '{sn_param}',"
                         f"JobNum = '{MySQL_Job}',"
@@ -136,15 +143,20 @@ sql = (f"INSERT INTO {TableDetailStr} SET "
                 )
                 
 0x80:128
+PyMySQL.exe 128 iSN ,full_string
 sql = f"UPDATE {MySQL_TYPE} SET {full_string} WHERE iSN = '{sn_param}'"
 
 0x100:256
+PyMySQL.exe 256 CSN
 sql = f"SELECT iSN FROM {MySQL_TYPE} WHERE CSN = '{sn_param}'"
 
 0x200:512
+PyMySQL.exe 512 iSN
+將當前最新時間寫入註冊表
 
 0x400:1024
 
 0x800:2048
 
                
+https://raw.githubusercontent.com/StanleyChen0924/U-MEDiA/refs/heads/main/PyMySQL.py
