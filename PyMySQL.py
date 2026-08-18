@@ -88,6 +88,11 @@ def main():
     config = configparser.ConfigParser(strict=False, inline_comment_prefixes='//')
     # 2. 抓取 [setting] 區塊內的資訊
     try:
+        import os
+        if not os.path.exists('MySQLConfig.ini'):
+            print(f"❌ 找不到 MySQLConfig.ini 設定檔")
+            sys.exit(1)
+        
         config.read('MySQLConfig.ini', encoding='utf-8')
 
         MySQL_ServerIP   = config['setting']['MySQL_ServerIP']
@@ -108,11 +113,13 @@ def main():
         ##print(f"成功載入設定，準備連線至: {MySQL_ServerIP}")
 
     except KeyError as e:
-        print(clean_msg(f"❌ INI 檔案格式錯誤，找不到參數: {e}"))
-        sys.exit()
+        print(f"❌ INI 檔案格式錯誤，找不到參數: {e}")
+        print(f"   請確保 MySQLConfig.ini 中 [setting] 區塊包含所有必要的設定")
+        sys.exit(1)
 
     # 3. 資料庫連線設定
     try:
+        ##print(f"嘗試連接到 MySQL 伺服器: {MySQL_ServerIP}")
         db = pymysql.connect(
             host=MySQL_ServerIP,
             user=MySQL_username,
@@ -121,6 +128,7 @@ def main():
             charset='utf8',
             cursorclass=pymysql.cursors.DictCursor
         )
+        ##print(f"✅ 連接成功")
         
         with db.cursor() as cursor:
             # 4. 使用 %s 作為佔位符，並將參數傳入 execute
@@ -164,21 +172,19 @@ def main():
                     type_Execute += 0x2
  
 
-            ##type 0x04 check CMAC = false
+            ##python PyMySQL.py 4 230411797 isn         
             if type_param & 0x4:
-                sql = "SELECT * FROM " + MySQL_TYPE + " WHERE CMAC = '" + sn_param + "'"
-                print(f"Sql Command= {sql}")
+                sql = f"SELECT * FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'"
                 cursor.execute(sql)
-                db.commit()
+                ##db.commit()
                 result = cursor.fetchone()
-                if result:
-                    ##print(clean_msg(f"✅ 找到 SN [{sn_param}] 的資料: {result}"))
+                if result is not None:                    
+                    print(f"{result}")
+                    type_Execute += 0x4
+                else:
+                    print(clean_msg(f"❌ 找不到 {full_string} 為 [{cursor.rowcount}] 的紀錄"))
                     ##print(f"FAIL")
                     return
-                else:
-                    print(clean_msg(f"❌ 找不到 SN 為 [{sn_param}] 的紀錄"))
-                    ##print(f"PASS")
-                    type_Execute += 0x4
 
             ##type 0x08 Insert CARD of PASS test
             if type_param & 0x8:
@@ -338,9 +344,36 @@ def main():
                     # 將時間轉為字串存入（REG_SZ），亦可轉為整數存入（REG_DWORD）
                     winreg.SetValueEx(key, VALUE_NAME, 0, winreg.REG_SZ, str(current_time))
                 type_Execute += 0x200
+                
+            ##python PyMySQL.py 1024 230411797          
+            if type_param & 0x400:
+                sql = f"SELECT * FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'"
+                cursor.execute(sql)
+                ##db.commit()
+                result = cursor.fetchone()
+                if result is not None:                    
+                    print(f"{result}")
+                    type_Execute += 0x400
+                else:
+                    print(clean_msg(f"❌ 找不到 {full_string} 為 [{cursor.rowcount}] 的紀錄"))
+                    ##print(f"FAIL")
+                    return
                           
+    except pymysql.err.OperationalError as e:
+        print(f"❌ MySQL 連接錯誤 (OperationalError): {e}")
+        print(f"   請檢查:")
+        print(f"   - 伺服器地址: {MySQL_ServerIP}")
+        print(f"   - 使用者名稱: {MySQL_username}")
+        print(f"   - 資料庫名稱: {MySQL_DB}")
+        sys.exit(1)
+    except pymysql.err.DatabaseError as e:
+        print(f"❌ 資料庫錯誤 (DatabaseError): {e}")
+        sys.exit(1)
     except Exception as e:
-        print(f"發生連線錯誤: {e}")
+        print(f"❌ 發生連線錯誤: {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
 
     finally:
 
