@@ -4,6 +4,11 @@ import sys
 import pymysql
 import time
 
+# Version 1.0.0.0 2026-08-19, Modified by Stanley
+# Modified type_param & 0x4:
+# 更正功能為搜尋所有站別狀態資料
+# Added type_param & 0x400: 查詢產品版本
+
 # Version 1.0.0.0 2026-08-12, Modified by Stanley
 # Modified type_param & 0x100:
 # 更正語法錯誤 
@@ -39,7 +44,6 @@ def clean_msg(text):
 
 def main():
     full_string = " ".join(sys.argv[3:])
-    print(f"{full_string}")
 
     # winreg 為 Windows 獨有模組，先進行平台檢查
     if sys.platform != "win32":
@@ -94,10 +98,11 @@ def main():
             sys.exit(1)
         
         config.read('MySQLConfig.ini', encoding='utf-8')
-
-        MySQL_ServerIP   = config['setting']['MySQL_ServerIP']
+        Debug_FLAG = config.getint('setting', 'Debug_FLAG') # 轉為整數
+        Test_count = config.getint('setting', 'Test_count') # 轉為整數
+        MySQL_ServerIP = config['setting']['MySQL_ServerIP']
         MySQL_username = config['setting']['MySQL_username']
-        MySQL_Password   = config['setting']['MySQL_Password']
+        MySQL_Password = config['setting']['MySQL_Password']
         MySQL_DB = config['setting']['MySQL_DB']
         MySQL_TYPE = config['setting']['MySQL_TYPE']
         
@@ -136,7 +141,8 @@ def main():
             ##type 0x01 check iSN BeforStation = true
             if type_param & 0x1:
                 sql = f"SELECT {TableDetailStr} FROM CARD WHERE iSN = '{sn_param}'{MySQL_BeforStation}"
-                print(f"Sql Command= {sql}")
+                if Debug_FLAG==1:
+                	print(f"Sql Command= {sql}")
                 cursor.execute(sql)
                 db.commit()
                 result = cursor.fetchone()
@@ -156,13 +162,14 @@ def main():
                 ##else:
                 ##    sql = f"SELECT {TableDetailStr} FROM {MySQL_TYPE} WHERE iSN = '{sn_param}' and {TableDetailStr} = 0"
 
-                print(f"Sql Command= {sql}")
+                if Debug_FLAG==1:
+                	print(f"Sql Command= {sql}")
                 cursor.execute(sql)
                 db.commit()
                 result = cursor.fetchone()
                 ##print(clean_msg(f"✅ 找到 SN [{sn_param}] 的資料: {result}"))
 
-                if result and result[f'{TableDetailStr}'] > 6:
+                if result and result[f'{TableDetailStr}'] > Test_count:
                     print(clean_msg(f"❌ 找不到 SN 為 [{sn_param}] 的資料: {result}"))
                     ##print(f"FAIL")
                     return
@@ -189,7 +196,8 @@ def main():
             ##type 0x08 Insert CARD of PASS test
             if type_param & 0x8:
                 sql = f"INSERT INTO {MySQL_TYPE} SET iSN='{sn_param}',{TableDetailStr}=100 ON DUPLICATE KEY UPDATE {TableDetailStr} = {TableDetailStr} + 100"
-                print(f"Sql Command= {sql}")
+                if Debug_FLAG==1:
+                	print(f"Sql Command= {sql}")
                 cursor.execute(sql)
                 db.commit()
                 
@@ -206,7 +214,8 @@ def main():
             ##type 0x10 Insert CARD of FAIL test
             if type_param & 0x10:
                 sql = f"INSERT INTO {MySQL_TYPE} SET iSN='{sn_param}',{TableDetailStr}=1 ON DUPLICATE KEY UPDATE {TableDetailStr} = {TableDetailStr} + 1"
-                print(f"Sql Command= {sql}")
+                if Debug_FLAG==1:
+                	print(f"Sql Command= {sql}")
                 cursor.execute(sql)
                 db.commit()
                 
@@ -226,7 +235,8 @@ def main():
                 ##update_fields = f"{TableDetailStr} = 1, status = 'PASS', update_time = NOW()"
                 # 2. 組合 UPDATE 語法：UPDATE 表格 SET 欄位=值 WHERE 條件
                 sql = f"UPDATE {MySQL_TYPE} SET {TableDetailStr}={TableDetailStr}+100 {full_string} WHERE iSN = '{sn_param}'"
-                print(f"Sql Command= {sql}")
+                if Debug_FLAG==1:
+                	print(f"Sql Command= {sql}")
                 cursor.execute(sql)
                 db.commit()
                 #檢查是否執行成功 (INSERT 通常看 rowcount)
@@ -278,7 +288,8 @@ def main():
                         f"throughTime = {throughTime}"
                         f"{full_string}"
                 )
-                print(f"Sql Command= {sql}")
+                if Debug_FLAG==1:
+                	print(f"Sql Command= {sql}")
                 cursor.execute(sql)
                 db.commit()
                 #檢查是否執行成功 (INSERT 通常看 rowcount)
@@ -291,7 +302,7 @@ def main():
                     ##print(f"FAIL")
                     return
                     
-            ##type 0x10 Update CARD 2SN            
+            ##type 0x10 Update CARD iSN            
             ##執行Command如下
             ##python PyMySQL.py 128 0011e0123456 ,StartTime='2026-04-27 11:00:11',StopTime='2026-04-27 11:03:01',throughTime=100,log='test OK',errorCode='SWF04'
             if type_param & 0x80:
@@ -300,7 +311,8 @@ def main():
                 # 2. 組合 UPDATE 語法：UPDATE 表格 SET 欄位=值 WHERE 條件
                 ## sql = f"UPDATE {MySQL_TYPE} SET {TableDetailStr}={TableDetailStr} {full_string} WHERE iSN = '{sn_param}'"
                 sql = f"UPDATE {MySQL_TYPE} SET {full_string} WHERE iSN = '{sn_param}'"
-                print(f"Sql Command= {sql}")
+                if Debug_FLAG==1:
+                	print(f"Sql Command= {sql}")
                 cursor.execute(sql)
                 db.commit()
                 #檢查是否執行成功 (INSERT 通常看 rowcount)
@@ -326,7 +338,8 @@ def main():
                     ##print(clean_msg(f"✅ 找到 SN [{sn_param}] 的資料: {result}"))
                     ##print(f"PASS")
                     print(f"{result['iSN']}")
-                    print(f"Sql Command= {sql}")
+                    if Debug_FLAG==1:
+                    	print(f"Sql Command= {sql}")
                     type_Execute += 0x100
                 else:
                     print(clean_msg(f"❌ 找不到 CSN 為 [{cursor.rowcount}] 的紀錄"))
@@ -345,14 +358,15 @@ def main():
                     winreg.SetValueEx(key, VALUE_NAME, 0, winreg.REG_SZ, str(current_time))
                 type_Execute += 0x200
                 
-            ##python PyMySQL.py 1024 230411797          
+            ##python PyMySQL.py 1024 230411797 STA1         
             if type_param & 0x400:
-                sql = f"SELECT * FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'"
-                cursor.execute(sql)
+                version_column = f"{full_string}_Version"
+                sql = f"SELECT `{version_column}` FROM testprogramversion WHERE ProgramName LIKE %s"
+                cursor.execute(sql, (sn_param,))
                 ##db.commit()
                 result = cursor.fetchone()
                 if result is not None:                    
-                    print(f"{result}")
+                    print(f"{result[version_column]}")
                     type_Execute += 0x400
                 else:
                     print(clean_msg(f"❌ 找不到 {full_string} 為 [{cursor.rowcount}] 的紀錄"))
