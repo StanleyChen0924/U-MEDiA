@@ -1,5 +1,6 @@
 ###pip install PyMySQL
 import configparser
+import os
 import sys
 import pymysql
 import time
@@ -40,6 +41,51 @@ def clean_msg(text):
     if isinstance(text, str):
         return text.encode('ascii', 'ignore').decode('ascii')
     return text
+
+
+def get_config_path():
+    if getattr(sys, "frozen", False):
+        application_dir = os.path.dirname(os.path.abspath(sys.executable))
+    else:
+        application_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(application_dir, "MySQLConfig.ini")
+
+
+def load_config():
+    config_path = get_config_path()
+    config = configparser.ConfigParser(strict=False, inline_comment_prefixes='//')
+
+    if not os.path.exists(config_path):
+        config['setting'] = {
+            'Test_count': '3',
+            'Debug_FLAG': '0',
+            'MySQL_FLAG': '1',
+            'MySQL_InsertFlag': '0',
+            'MySQL_BeforStation': 'and STA1 > 100',
+            'TableDetailStr': 'STA2',
+            'MySQL_ServerIP': '169.254.10.2',
+            'MySQL_username': 'U94003',
+            'MySQL_Password': 'U94003',
+            'MySQL_DB': 'LITEON',
+            'MySQL_TYPE': 'CARD',
+            'MySQL_Job': 'PUA00K5',
+            'MySQL_ModelName': 'BIW-LA00',
+            'MySQL_Operator': 'U93039',
+            'MySQL_Station': '1006-1001',
+            'MySQL_CPNumber': '4-3-1'
+        }
+        try:
+            with open(config_path, 'w', encoding='utf-8') as config_file:
+                config.write(config_file)
+        except OSError as error:
+            raise OSError(f"無法建立 MySQLConfig.ini: {error}") from error
+
+    try:
+        if not config.read(config_path, encoding='utf-8'):
+            raise OSError(f"無法讀取設定檔: {config_path}")
+        return config
+    except (configparser.Error, OSError) as error:
+        raise OSError(f"MySQLConfig.ini 設定檔錯誤: {error}") from error
 
 
 def main():
@@ -89,15 +135,9 @@ def main():
 ##        Update_Str = sys.argv[5]
 
     # 1. 初始化讀取器
-    config = configparser.ConfigParser(strict=False, inline_comment_prefixes='//')
+    config = load_config()
     # 2. 抓取 [setting] 區塊內的資訊
     try:
-        import os
-        if not os.path.exists('MySQLConfig.ini'):
-            print(f"❌ 找不到 MySQLConfig.ini 設定檔")
-            sys.exit(1)
-        
-        config.read('MySQLConfig.ini', encoding='utf-8')
         Debug_FLAG = config.getint('setting', 'Debug_FLAG') # 轉為整數
         Test_count = config.getint('setting', 'Test_count') # 轉為整數
         MySQL_ServerIP = config['setting']['MySQL_ServerIP']
@@ -181,7 +221,7 @@ def main():
 
             ##python PyMySQL.py 4 230411797 isn         
             if type_param & 0x4:
-                sql = f"SELECT * FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'"
+                sql = f"SELECT {TableDetailStr} FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'"
                 cursor.execute(sql)
                 ##db.commit()
                 result = cursor.fetchone()
@@ -358,7 +398,7 @@ def main():
                     winreg.SetValueEx(key, VALUE_NAME, 0, winreg.REG_SZ, str(current_time))
                 type_Execute += 0x200
                 
-            ##python PyMySQL.py 1024 SA-AN-220-RT STA1         
+            ##python PyMySQL.py 1024 230411797 STA1         
             if type_param & 0x400:
                 version_column = f"{full_string}_Version"
                 sql = f"SELECT `{version_column}` FROM testprogramversion WHERE ProgramName LIKE %s"
@@ -372,6 +412,7 @@ def main():
                     print(clean_msg(f"❌ 找不到 {full_string} 為 [{cursor.rowcount}] 的紀錄"))
                     ##print(f"FAIL")
                     return
+            
                           
     except pymysql.err.OperationalError as e:
         print(f"❌ MySQL 連接錯誤 (OperationalError): {e}")
