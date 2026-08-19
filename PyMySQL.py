@@ -407,6 +407,8 @@ def main():
                 result = cursor.fetchone()
                 if result is not None:                    
                     print(f"{result[version_column]}")
+                    if Debug_FLAG==1:
+                    	print(f"Sql Command= {sql}")
                     type_Execute += 0x400
                 else:
                     print(clean_msg(f"❌ 找不到 {full_string} 為 [{cursor.rowcount}] 的紀錄"))
