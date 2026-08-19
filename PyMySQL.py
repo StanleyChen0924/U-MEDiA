@@ -358,7 +358,7 @@ def main():
                     winreg.SetValueEx(key, VALUE_NAME, 0, winreg.REG_SZ, str(current_time))
                 type_Execute += 0x200
                 
-            ##python PyMySQL.py 1024 230411797 STA1         
+            ##python PyMySQL.py 1024 SA-AN-220-RT STA1         
             if type_param & 0x400:
                 version_column = f"{full_string}_Version"
                 sql = f"SELECT `{version_column}` FROM testprogramversion WHERE ProgramName LIKE %s"
