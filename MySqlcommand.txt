@@ -116,7 +116,7 @@ sql = f"SELECT {TableDetailStr} FROM {MySQL_TYPE} WHERE iSN = '{sn_param}'"
 
 0x4:4
 PyMySQL.exe 4 230411797 iSN or PyMySQL.exe 123456789 CSN
-sql = f"SELECT * FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'"
+sql = f"SELECT {TableDetailStr} FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'"
 
 0x8:8
 PyMySQL.exe 8 230411797
@@ -160,6 +160,7 @@ PyMySQL.exe 1024 SA-AN-220-RT STA1
 
 0x800:2048
 
+https://github.com/StanleyChen0924/U-MEDiA
                
 https://raw.githubusercontent.com/StanleyChen0924/U-MEDiA/refs/heads/main/PyMySQL.py
 
