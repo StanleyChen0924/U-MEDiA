@@ -107,31 +107,31 @@ yyyy-MM-dd HH:mm:ss,CURRENT_DATE
 
 
 0x1:1
-PyMySQL.exe 1 iSN
+PyMySQL.exe 1 230411797
 sql = f"SELECT {TableDetailStr} FROM CARD WHERE iSN = '{sn_param}'{MySQL_BeforStation}"
 
 0x2:2
-PyMySQL.exe 2 iSN
+PyMySQL.exe 2 230411797
 sql = f"SELECT {TableDetailStr} FROM {MySQL_TYPE} WHERE iSN = '{sn_param}'"
 
 0x4:4
-PyMySQL.exe 4 iSN iSN or PyMySQL.exe CSN CSN
+PyMySQL.exe 4 230411797 iSN or PyMySQL.exe 123456789 CSN
 sql = f"SELECT * FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'"
 
 0x8:8
-PyMySQL.exe 8 iSN
+PyMySQL.exe 8 230411797
 sql = f"INSERT INTO {MySQL_TYPE} SET iSN='{sn_param}',{TableDetailStr}=100 ON DUPLICATE KEY UPDATE {TableDetailStr} = {TableDetailStr} + 100"
 
 0x10:16
-PyMySQL.exe 16 iSN
+PyMySQL.exe 16 230411797
 sql = f"INSERT INTO {MySQL_TYPE} SET iSN='{sn_param}',{TableDetailStr}=1 ON DUPLICATE KEY UPDATE {TableDetailStr} = {TableDetailStr} + 1"
 
 0x20:32
-PyMySQL.exe 32 iSN
+PyMySQL.exe 32 230411797
 sql = f"UPDATE {MySQL_TYPE} SET {TableDetailStr}={TableDetailStr}+100 {full_string} WHERE iSN = '{sn_param}'"
 
 0x40:64
-PyMySQL.exe 64 iSN
+PyMySQL.exe 64 230411797
 sql = (f"INSERT INTO {TableDetailStr} SET "
                         f"iSN = '{sn_param}',"
                         f"JobNum = '{MySQL_Job}',"
@@ -143,18 +143,20 @@ sql = (f"INSERT INTO {TableDetailStr} SET "
                 )
                 
 0x80:128
-PyMySQL.exe 128 iSN ,full_string
+PyMySQL.exe 128 230411797 ,full_string
 sql = f"UPDATE {MySQL_TYPE} SET {full_string} WHERE iSN = '{sn_param}'"
 
 0x100:256
-PyMySQL.exe 256 CSN
+PyMySQL.exe 256 123456789
 sql = f"SELECT iSN FROM {MySQL_TYPE} WHERE CSN = '{sn_param}'"
 
 0x200:512
-PyMySQL.exe 512 iSN
+PyMySQL.exe 512 230411797
 將當前最新時間寫入註冊表
 
 0x400:1024
+PyMySQL.exe 1024 SA-AN-220-RT STA1
+查詢產品版本
 
 0x800:2048
 
