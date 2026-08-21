@@ -190,7 +190,7 @@ ON DUPLICATE KEY UPDATE {TableDetailStr} = {TableDetailStr} + 100
 
 **執行命令**:
 ```bash
-python PyMySQL.py 0x08 0011e0123457
+python PyMySQL.py 0x08 230411797
 ```
 
 **預期結果**:
@@ -210,7 +210,7 @@ ON DUPLICATE KEY UPDATE {TableDetailStr} = {TableDetailStr} + 1
 
 **執行命令**:
 ```bash
-python PyMySQL.py 0x10 0011e0123457
+python PyMySQL.py 0x10 230411797
 ```
 
 **預期結果**:
@@ -230,7 +230,7 @@ WHERE iSN = '{sn_param}'
 
 **執行命令**:
 ```bash
-python PyMySQL.py 0x20 0011e0123458 ,CMAC=003044123456,CSN=123456789012
+python PyMySQL.py 0x20 230411797 ,CMAC=003044123456,CSN=123456789012
 ```
 
 **參數說明**:
@@ -256,7 +256,7 @@ INSERT INTO {TableDetailStr} SET
 
 **執行命令**:
 ```bash
-python PyMySQL.py 0x40 0011e0123456 ,StartTime='2026-04-27 11:00:11',StopTime='2026-04-27 11:03:01',log='TESTLOG.txt',DATA='Vol=12.1,T=25.4,da=xxxx'
+python PyMySQL.py 0x40 230411797 ,StartTime='2026-04-27 11:00:11',StopTime='2026-04-27 11:03:01',log='TESTLOG.txt',DATA='Vol=12.1,T=25.4,da=xxxx'
 ```
 
 **自動記錄**:
@@ -281,7 +281,7 @@ UPDATE {MySQL_TYPE} SET {full_string} WHERE iSN = '{sn_param}'
 
 **執行命令**:
 ```bash
-python PyMySQL.py 0x80 0011e0123456 ,status='PASS',update_time=NOW(),note='Updated'
+python PyMySQL.py 0x80 230411797 ,status='PASS',update_time=NOW(),note='Updated'
 ```
 
 **參數說明**:
@@ -299,7 +299,7 @@ SELECT iSN FROM {MySQL_TYPE} WHERE CSN = '{sn_param}'
 
 **執行命令**:
 ```bash
-python PyMySQL.py 0x100 250202710
+python PyMySQL.py 0x100 ST23150361020841A0
 ```
 
 **輸出**: 對應的 iSN 值
@@ -351,16 +351,16 @@ python PyMySQL.py 0x400 SA-AN-220-RT STA1
 ### 範例 1：完整的測試流程
 ```bash
 # 1. 檢查前站是否有此 SN
-python PyMySQL.py 0x01 0011e0123457
+python PyMySQL.py 0x01 230411797
 
 # 2. 檢查當前站計數
-python PyMySQL.py 0x02 0011e0123457
+python PyMySQL.py 0x02 230411797
 
 # 3. 記錄開始時間至註冊表
-python PyMySQL.py 0x200 0011e0123457
+python PyMySQL.py 0x200 230411797
 
 # 4. 測試通過 - 插入通過記錄
-python PyMySQL.py 0x08 0011e0123457
+python PyMySQL.py 0x08 230411797
 
 # 5. 記錄測試日誌
 python PyMySQL.py 0x40 0011e0123457 ,log='test completed successfully'
@@ -369,7 +369,7 @@ python PyMySQL.py 0x40 0011e0123457 ,log='test completed successfully'
 ### 範例 2：組合類型執行（使用位運算）
 ```bash
 # 同時執行多個操作：0x01 + 0x02 + 0x08 = 0x0B
-python PyMySQL.py 0x0B 0011e0123457
+python PyMySQL.py 0x0B 230411797
 
 # 執行流程：
 # 1. 檢查前站 (0x01)
@@ -424,6 +424,7 @@ Debug_FLAG = 1  # 1=開啟, 0=關閉
 
 | 版本 | 日期 | 修改內容 |
 |------|------|--------|
+| 1.0.0.0 | 2026-08-21 | 修正 0x04 查詢語法 |
 | 1.0.0.0 | 2026-08-19 | 新增 0x400 版本查詢功能 |
 | 1.0.0.0 | 2026-08-12 | 修正 0x100 查詢語法；新增 0x200 註冊表時間紀錄 |
 | 1.0.0.0 | 2026-08-12 | 新增 0x01~0x80 基本功能 |
