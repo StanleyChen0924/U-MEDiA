@@ -158,14 +158,17 @@ python PyMySQL.py 0x02 0011e0123457
 
 **SQL 邏輯**:
 ```sql
-SELECT * FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'
+SELECT {select_columns} FROM {MySQL_TYPE} WHERE {where_column} = '{sn_param}'
 ```
 
 **執行命令**:
 ```bash
-python PyMySQL.py 0x04 230411797 iSN       ,由iSN  查詢 CARD 所有狀態
-python PyMySQL.py 0x04 003044123456 CMAC   ,由CMAC 查詢 CARD 所有狀態
-python PyMySQL.py 0x04 12345678 CSN        ,由CSN  查詢 CARD 所有狀態
+python PyMySQL.py 0x04 230411797 iSN *                      ,由 iSN  查詢 CARD 所有狀態
+python PyMySQL.py 0x04 230411797 iSN CMAC,CSN               ,由 iSN  查詢 CARD 的 CMAC,CSN
+python PyMySQL.py 0x04 14:3F:C3:90:6F:C3 CMAC *             ,由 CMAC 查詢 CARD 所有狀態
+python PyMySQL.py 0x04 14:3F:C3:90:6F:C iSN CMAC,CSN        ,由 CMAC 查詢 CARD 的 CMAC,CSN
+python PyMySQL.py 0x04 ST23150361020841A0 CSN *             ,由 CSN  查詢 CARD 所有狀態
+python PyMySQL.py 0x04 ST23150361020841A0 iSN CMAC,CSN      ,由 CSN  查詢 CARD 的 CMAC,CSN
 ```
 
 **參數說明**:
