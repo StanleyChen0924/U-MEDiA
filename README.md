@@ -119,7 +119,7 @@ SELECT {TableDetailStr} FROM CARD WHERE iSN = '{sn_param}' AND Station = 'BeforS
 
 **執行命令**:
 ```bash
-python PyMySQL.py 0x01 0011e0123457
+python PyMySQL.py 0x01 230411797 
 ```
 
 **成功條件**:
@@ -146,7 +146,7 @@ SELECT {TableDetailStr} FROM {MySQL_TYPE} WHERE iSN = '{sn_param}'
 
 **執行命令**:
 ```bash
-python PyMySQL.py 0x02 0011e0123457
+python PyMySQL.py 0x02 230411797 
 ```
 
 **應用場景**: 防止重複測試或測試計數超限
@@ -173,6 +173,7 @@ python PyMySQL.py 0x04 ST23150361020841A0 CSN CMAC,iSN      ,由 CSN  查詢 CAR
 **參數說明**:
 - `{sn_param}`: 查詢值
 - `{full_string}`: 欄位名稱（第 3 個及以後的參數拼接）
+- `{select_columns} : 查詢的欄位名稱
 
 **輸出**: 完整的記錄詳情
 
