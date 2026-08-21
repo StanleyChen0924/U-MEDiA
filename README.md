@@ -166,10 +166,9 @@ SELECT {select_columns} FROM {MySQL_TYPE} WHERE {where_column} = '{sn_param}'
 python PyMySQL.py 0x04 230411797 iSN *                      ,由 iSN  查詢 CARD 所有狀態
 python PyMySQL.py 0x04 230411797 iSN CMAC,CSN               ,由 iSN  查詢 CARD 的 CMAC,CSN
 python PyMySQL.py 0x04 14:3F:C3:90:6F:C3 CMAC *             ,由 CMAC 查詢 CARD 所有狀態
-python PyMySQL.py 0x04 14:3F:C3:90:6F:C iSN CMAC,CSN        ,由 CMAC 查詢 CARD 的 CMAC,CSN
+python PyMySQL.py 0x04 14:3F:C3:90:6F:C CMAC iSN,CSN        ,由 CMAC 查詢 CARD 的 iSN,CSN
 python PyMySQL.py 0x04 ST23150361020841A0 CSN *             ,由 CSN  查詢 CARD 所有狀態
-python PyMySQL.py 0x04 ST23150361020841A0 iSN CMAC,CSN      ,由 CSN  查詢 CARD 的 CMAC,CSN
-```
+python PyMySQL.py 0x04 ST23150361020841A0 CSN CMAC,iSN      ,由 CSN  查詢 CARD 的 CMAC,iSN```
 
 **參數說明**:
 - `{sn_param}`: 查詢值
