@@ -123,6 +123,11 @@ def main():
     
     # 取得命令列輸入的 SN
     sn_param = sys.argv[2]
+    
+    # 取得命令列輸入的 SELECT item
+    if (len(sys.argv) >= 4):
+    	SELECT_item = sys.argv[3]
+    
 
 
 ##    if (len(sys.argv) >= 4):
@@ -219,17 +224,25 @@ def main():
                     type_Execute += 0x2
  
 
-            ##python PyMySQL.py 4 230411797 isn         
+            ##python PyMySQL.py 4 230411797 isn CMAC,CSN
             if type_param & 0x4:
-                sql = f"SELECT {TableDetailStr} FROM {MySQL_TYPE} WHERE {full_string} = '{sn_param}'"
-                cursor.execute(sql)
+                where_column = SELECT_item
+                select_columns = ",".join(sys.argv[4:]) or where_column
+                sql = f"SELECT {select_columns} FROM {MySQL_TYPE} WHERE {where_column} = %s"
+                cursor.execute(sql, (sn_param,))
                 ##db.commit()
                 result = cursor.fetchone()
-                if result is not None:                    
-                    print(f"{result}")
+                if Debug_FLAG==1:
+                	print(f"Sql Command= {sql}")
+                if result is not None:
+                    if select_columns.strip() == "*":
+                        values = [str(value) for value in result.values()]
+                    else:
+                        values = [str(result[column.strip()]) for column in select_columns.split(",")]
+                    print(",".join(values))
                     type_Execute += 0x4
                 else:
-                    print(clean_msg(f"❌ 找不到 {full_string} 為 [{cursor.rowcount}] 的紀錄"))
+                    print(clean_msg(f"❌ 找不到 {where_column} 為 [{sn_param}] 的紀錄"))
                     ##print(f"FAIL")
                     return
 
